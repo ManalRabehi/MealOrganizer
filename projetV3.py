@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from collections import defaultdict
 
-#commentaire
-
 class Contribution:
     # représente la contribution de chaque étudiant
     def __init__(self, nom, prenom, categorie, apport):
