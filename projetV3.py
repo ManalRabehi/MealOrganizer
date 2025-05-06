@@ -154,14 +154,18 @@ def exporter_contributions():
         messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
 
 def supprimer_contribution():
-    selection = listbox_contrib.curselection()
-    if not selection:
+    selected_item = tableau_contrib.selection()
+    if not selected_item:
         messagebox.showwarning("Aucune sélection", "Sélectionne une contribution à supprimer.")
         return
 
-    index = selection[0]  # quelle ligne a été choisie
-    del gr.contributions[index]  # supprime cette contribution
+    index = tableau_contrib.index(selected_item[0])  # obtenir l'index
+    del gr.contributions[index]  # supprime la contribution du modèle
+
+    tableau_contrib.delete(selected_item[0])  # supprime de l'interface graphique
+
     messagebox.showinfo("Supprimé", "Contribution supprimée avec succès.")
+
 
     # actualiser la liste
     afficher_contrib(room_selection_window)
