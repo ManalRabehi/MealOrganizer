@@ -94,18 +94,21 @@ def interface_participant(onglet):
     Button(onglet, text="Soumettre", command=enregistrer, bg="#4CAF50", fg="white", font=("Helvetica", 12)).pack(pady=10)
 
 def afficher_contrib(fenetre):
-    tableau_frame = Frame(fenetre)
-    tableau_frame.pack(pady=20)
+    global listbox_contrib  # on rend la liste accessible ailleurs
+    frame = Frame(fenetre)
+    frame.pack(pady=10)
 
-    headers = ["Nom", "Prénom", "Catégorie", "Apport"]
-    for i, header in enumerate(headers):
-        Label(tableau_frame, text=header, font=("Helvetica", 12, "bold"), borderwidth=1, relief="solid", padx=10, pady=5).grid(row=0, column=i)
+    Label(frame, text="Liste des contributions", font=("Helvetica", 14)).pack()
 
-    for row_index, c in enumerate(gr.contributions, start=1):
-        Label(tableau_frame, text=c.nom, borderwidth=1, relief="solid", padx=10, pady=5).grid(row=row_index, column=0)
-        Label(tableau_frame, text=c.prenom, borderwidth=1, relief="solid", padx=10, pady=5).grid(row=row_index, column=1)
-        Label(tableau_frame, text=c.categorie, borderwidth=1, relief="solid", padx=10, pady=5).grid(row=row_index, column=2)
-        Label(tableau_frame, text=c.apport, borderwidth=1, relief="solid", padx=10, pady=5).grid(row=row_index, column=3)
+    listbox_contrib = Listbox(frame, width=60, height=10)
+    listbox_contrib.pack()
+
+    # Remplir la liste
+    listbox_contrib.delete(0, END)
+    for i, c in enumerate(gr.contributions):
+        ligne = f"{i+1}. {c.nom} {c.prenom} - {c.categorie} : {c.apport}"
+        listbox_contrib.insert(END, ligne)
+
 
 def afficher_recapitulatif(fenetre):
     recap_frame = Frame(fenetre)
@@ -145,6 +148,19 @@ def exporter_contributions():
     except Exception as e:
         messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
 
+def supprimer_contribution():
+    selection = listbox_contrib.curselection()
+    if not selection:
+        messagebox.showwarning("Aucune sélection", "Sélectionne une contribution à supprimer.")
+        return
+
+    index = selection[0]  # quelle ligne a été choisie
+    del gr.contributions[index]  # supprime cette contribution
+    messagebox.showinfo("Supprimé", "Contribution supprimée avec succès.")
+
+    # actualiser la liste
+    afficher_contrib(room_selection_window)
+
 def ouvrir_organisation():
     global room_selection_window
     room_selection_window = Tk()
@@ -157,9 +173,13 @@ def ouvrir_organisation():
 
     Label(room_selection_window, font=("Helvetica", 14)).pack(pady=20)
     afficher_recapitulatif(room_selection_window)
- # Bouton pour exporter
+     # Bouton pour exporter
     Button(room_selection_window, text="Exporter les contributions", bg="#4CAF50", fg="white",
            command=exporter_contributions).pack(pady=10)
+
+    # Bouton pour supprimer (à l'intérieur de la fonction !)
+    Button(room_selection_window, text="Supprimer la contribution sélectionnée", bg="#f44336", fg="white",
+           command=supprimer_contribution).pack(pady=10)
 
 
 def authenticate():
