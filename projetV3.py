@@ -133,6 +133,17 @@ def afficher_recapitulatif(fenetre):
 
         for plat in plats_par_categorie[cat]:
             Label(liste_frame, text=plat, anchor="w").pack(anchor="w")
+#Fonvtion pour a
+def exporter_contributions():
+    try:
+        with open("contributions.txt", "w", encoding="utf-8") as f:
+            f.write("Liste des contributions :\n\n")
+            for c in gr.contributions:
+                ligne = f"{c.nom} {c.prenom} - {c.categorie} : {c.apport}\n"
+                f.write(ligne)
+        messagebox.showinfo("Exportation réussie", "Les contributions ont été enregistrées dans 'contributions.txt'.")
+    except Exception as e:
+        messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
 
 def ouvrir_organisation():
     global room_selection_window
@@ -146,6 +157,10 @@ def ouvrir_organisation():
 
     Label(room_selection_window, font=("Helvetica", 14)).pack(pady=20)
     afficher_recapitulatif(room_selection_window)
+ # Bouton pour exporter
+    Button(room_selection_window, text="Exporter les contributions", bg="#4CAF50", fg="white",
+           command=exporter_contributions).pack(pady=10)
+
 
 def authenticate():
     username = username_entry.get()
