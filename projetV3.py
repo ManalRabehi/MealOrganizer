@@ -94,20 +94,25 @@ def interface_participant(onglet):
     Button(onglet, text="Soumettre", command=enregistrer, bg="#4CAF50", fg="white", font=("Helvetica", 12)).pack(pady=10)
 
 def afficher_contrib(fenetre):
-    global listbox_contrib  # on rend la liste accessible ailleurs
-    frame = Frame(fenetre)
-    frame.pack(pady=10)
+    tableau_frame = Frame(fenetre)
+    tableau_frame.pack(pady=20)
 
-    Label(frame, text="Liste des contributions", font=("Helvetica", 14)).pack()
+    global tableau_contrib
+    tableau_contrib = ttk.Treeview(tableau_frame, columns=("Nom", "Prénom", "Catégorie", "Détails"), show="headings")
+    tableau_contrib.heading("Nom", text="Nom")
+    tableau_contrib.heading("Prénom", text="Prénom")
+    tableau_contrib.heading("Catégorie", text="Catégorie")
+    tableau_contrib.heading("Détails", text="Détails")
 
-    listbox_contrib = Listbox(frame, width=60, height=10)
-    listbox_contrib.pack()
+    tableau_contrib.column("Nom", anchor="center", width=100)
+    tableau_contrib.column("Prénom", anchor="center", width=100)
+    tableau_contrib.column("Catégorie", anchor="center", width=100)
+    tableau_contrib.column("Détails", anchor="center", width=100)
 
-    # Remplir la liste
-    listbox_contrib.delete(0, END)
-    for i, c in enumerate(gr.contributions):
-        ligne = f"{i+1}. {c.nom} {c.prenom} - {c.categorie} : {c.apport}"
-        listbox_contrib.insert(END, ligne)
+    for c in gr.contributions:
+        tableau_contrib.insert("", "end", values=(c.nom, c.prenom, c.categorie, c.apport))
+
+    tableau_contrib.pack()
 
 
 def afficher_recapitulatif(fenetre):
